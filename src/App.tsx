@@ -10,6 +10,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import PrivateRoutes from './components/PrivateRoutes';
 import Category from './components/Category';
+import CreateListing from './pages/CreateListing';
 
 // layout
 import RootLayout from './layout/RootLayout';
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       </Route>
       <Route path='sign-in' element={<SignIn />} />
       <Route path='sign-up' element={<SignUp />} />
+      <Route path='create-listing' element={<CreateListing />} />
       <Route path='forgot-password' element={<ForgotPassword />} />
     </Route>
   )
