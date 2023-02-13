@@ -7,7 +7,6 @@ import {
   where,
   orderBy,
   limit,
-  startAfter,
 } from 'firebase/firestore';
 import { db } from '../../firebase.config';
 import ListingItem from './ListingItem';
@@ -24,7 +23,7 @@ export interface Listing {
   furnished: boolean;
   offer: boolean;
   regularPrice: number;
-  discountedPrice: number;
+  discountedPrice?: number;
   location: string;
   geolocation: Geolocation;
   imageUrls: any[];

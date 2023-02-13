@@ -3,17 +3,12 @@ import bedIcon from '../assets/svg/bedIcon.svg';
 import bathtubIcon from '../assets/svg/bathtubIcon.svg';
 import { ReactComponent as DeleteIcon } from '../assets/svg/deleteIcon.svg';
 import { ListingData } from './Category';
+import { formatter } from '../utils/formatter';
 
 interface ListingItemProps {
   onDelete?: (id: string, name: string) => void;
   listing: ListingData;
 }
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-});
 
 const ListingItem = ({ onDelete, listing }: ListingItemProps) => {
   const { id, data } = listing;
@@ -29,7 +24,7 @@ const ListingItem = ({ onDelete, listing }: ListingItemProps) => {
           <p className='categoryListingLocation'>{data.location}</p>
           <p className='categoryListingName'>{data.name}</p>
           <p className='categoryListingPrice'>
-            {data.offer
+            {data.offer && data.discountedPrice
               ? formatter.format(data.discountedPrice)
               : formatter.format(data.regularPrice)}
             {data.type === 'rent' && ' / Month'}
