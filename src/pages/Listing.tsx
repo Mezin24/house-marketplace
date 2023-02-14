@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
 import { db } from '../../firebase.config';
 import Spinner from '../components/Spinner';
 import shareIcon from '../assets/svg/shareIcon.svg';
@@ -42,7 +50,23 @@ const Listing = () => {
 
   return (
     <main>
-      {/* Slider */}
+      <Swiper
+        slidesPerView={1}
+        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+      >
+        {listing?.imageUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <div
+              style={{
+                background: `url(${url}) center no-repeat`,
+                backgroundSize: 'cover',
+              }}
+              className='swiperSlideDiv'
+            ></div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
       <div
         className='shareIconDiv'
@@ -92,7 +116,7 @@ const Listing = () => {
           {listing?.furnished && <li>Furnished</li>}
         </ul>
 
-        <p className='listingLocationTitle'>Location</p>
+        {/* <p className='listingLocationTitle'>Location</p> */}
         {/* Map */}
 
         {auth.currentUser?.uid !== listing?.userRef && (
