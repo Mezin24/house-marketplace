@@ -96,8 +96,7 @@ const Profile = () => {
     }
   };
 
-  const onEdit = async (listingId: number) =>
-    navigate(`/edit-listing/${listingId}`);
+  const onEdit = (id: string) => navigate(`/edit-listing/${id}`);
 
   return (
     <div className='profile'>
