@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../components/Navbar';
@@ -6,7 +7,7 @@ import Navbar from '../components/Navbar';
 const RootLayout = () => {
   return (
     <>
-      {<Outlet />}
+      <div className='container'>{<Outlet />}</div>
       <Navbar />
       <ToastContainer />
     </>

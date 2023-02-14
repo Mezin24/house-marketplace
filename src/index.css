@@ -26,6 +26,12 @@ button {
   cursor: pointer;
 }
 
+.container {
+  /* width: 95%; */
+  margin: 0 auto;
+  max-width: 1160px;
+}
+
 .input,
 .passwordInput,
 .emailInput,
