@@ -7,33 +7,17 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase.config';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
-import { async } from '@firebase/util';
+import { FormData } from './CreateListing';
+import { Listing } from '../components/Category';
 
-export interface FormData {
-  type: string;
-  name: string;
-  bedrooms: number;
-  bathrooms: number;
-  parking: boolean;
-  furnished: boolean;
-  address?: string;
-  offer: boolean;
-  regularPrice: number;
-  discountedPrice?: number;
-  images: any;
-  latitude: number;
-  longitude: number;
-  userRef?: string;
-}
-
-const CreateListing = () => {
-  const [geolocationEnabled, setgeolocationEnabled] = useState(true);
-  const [loading, setLoading] = useState(false);
+const EditListing = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [listing, setListing] = useState<Listing | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     type: 'rent',
@@ -63,13 +47,19 @@ const CreateListing = () => {
     regularPrice,
     discountedPrice,
     images,
-    latitude,
-    longitude,
   } = formData;
 
   const auth = getAuth();
   const navigate = useNavigate();
+  const { listingId } = useParams();
   const isMonted = useRef(true);
+
+  useEffect(() => {
+    if (listing && listing.userRef !== auth.currentUser?.uid) {
+      toast.error('You can not edit this listing');
+      navigate('/');
+    }
+  }, []);
 
   useEffect(() => {
     if (isMonted) {
@@ -86,6 +76,26 @@ const CreateListing = () => {
       isMonted.current = false;
     };
   }, [isMonted]);
+
+  useEffect(() => {
+    setLoading(true);
+    (async () => {
+      if (!listingId) return;
+      const docRef = doc(db, 'listings', listingId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setListing(docSnap.data() as Listing);
+        setFormData({
+          ...(docSnap.data() as FormData),
+        });
+        setLoading(false);
+      } else {
+        navigate('/');
+        toast.error('Listing does not exist');
+      }
+    })();
+  }, [listingId, navigate]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -135,8 +145,6 @@ const CreateListing = () => {
             reject(error);
           },
           () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
             });
@@ -164,7 +172,10 @@ const CreateListing = () => {
     delete formDataCopy.address;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
 
-    const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+    if (!listingId) return;
+    const docRef = doc(db, 'listings', listingId);
+    await updateDoc(docRef, formDataCopy);
+
     setLoading(false);
     toast.success('Listing saved');
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
@@ -208,7 +219,7 @@ const CreateListing = () => {
   return (
     <div className='profile'>
       <header>
-        <p className='pageHeader'>Create a Listing</p>
+        <p className='pageHeader'>Edit a Listing</p>
       </header>
       <main>
         <form onSubmit={onSubmit}>
@@ -333,33 +344,6 @@ const CreateListing = () => {
             required
           />
 
-          {/* {
-            <div className='formLatLng flex'>
-              <div>
-                <label className='formLabel'>Latitude</label>
-                <input
-                  className='formInputSmall'
-                  type='number'
-                  name='latitude'
-                  value={latitude}
-                  onChange={onMutate}
-                  required
-                />
-              </div>
-              <div>
-                <label className='formLabel'>Longitude</label>
-                <input
-                  className='formInputSmall'
-                  type='number'
-                  name='longitude'
-                  value={longitude}
-                  onChange={onMutate}
-                  required
-                />
-              </div>
-            </div>
-          } */}
-
           <label className='formLabel'>Offer</label>
           <div className='formButtons'>
             <button
@@ -430,7 +414,7 @@ const CreateListing = () => {
             required
           />
           <button type='submit' className='primaryButton createListingButton'>
-            Create Listing
+            Edit Listing
           </button>
         </form>
       </main>
@@ -438,4 +422,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default EditListing;

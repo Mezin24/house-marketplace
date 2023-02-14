@@ -96,6 +96,9 @@ const Profile = () => {
     }
   };
 
+  const onEdit = async (listingId: number) =>
+    navigate(`/edit-listing/${listingId}`);
+
   return (
     <div className='profile'>
       <header className='profileHeader'>
@@ -155,6 +158,7 @@ const Profile = () => {
                   key={listing.id}
                   listing={listing}
                   onDelete={onDelete}
+                  onEdit={onEdit}
                 />
               ))}
             </ul>

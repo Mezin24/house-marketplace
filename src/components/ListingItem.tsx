@@ -2,15 +2,17 @@ import { Link } from 'react-router-dom';
 import bedIcon from '../assets/svg/bedIcon.svg';
 import bathtubIcon from '../assets/svg/bathtubIcon.svg';
 import { ReactComponent as DeleteIcon } from '../assets/svg/deleteIcon.svg';
+import { ReactComponent as EditIcon } from '../assets/svg/editIcon.svg';
 import { ListingData } from './Category';
 import { formatter } from '../utils/formatter';
 
 interface ListingItemProps {
   onDelete?: (id: string, name: string) => void;
   listing: ListingData;
+  onEdit?: (id: string) => void;
 }
 
-const ListingItem = ({ onDelete, listing }: ListingItemProps) => {
+const ListingItem = ({ onDelete, listing, onEdit }: ListingItemProps) => {
   const { id, data } = listing;
   return (
     <li className='categoryListing'>
@@ -51,6 +53,8 @@ const ListingItem = ({ onDelete, listing }: ListingItemProps) => {
           onClick={() => onDelete(id, data.name)}
         />
       )}
+
+      {onEdit && <EditIcon className='editIcon' onClick={() => onEdit(id)} />}
     </li>
   );
 };

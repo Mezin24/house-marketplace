@@ -16,6 +16,7 @@ import Listing from './pages/Listing';
 // layout
 import RootLayout from './layout/RootLayout';
 import Contact from './components/Contact';
+import EditListing from './pages/EditListing';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
       <Route path='forgot-password' element={<ForgotPassword />} />
       <Route path='category/:categoryName/:listingId' element={<Listing />} />
       <Route path='contact/:landlordId' element={<Contact />} />
+      <Route path='edit-listing/:listingId' element={<EditListing />} />
     </Route>
   )
 );

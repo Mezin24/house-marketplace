@@ -72,7 +72,6 @@ const Category = () => {
 
         const querySnap = await getDocs(q);
         const lastVisible = querySnap.docs[querySnap.docs.length - 1];
-        console.log(lastVisible);
         setLastFetchedListing(lastVisible);
         const listings: ListingData[] = [];
 
